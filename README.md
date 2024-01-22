@@ -1,4 +1,4 @@
-# Starter folder
+# Donaldson Paper
 
 ## Overview
 
