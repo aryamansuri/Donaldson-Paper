@@ -1,10 +1,8 @@
-# Donaldson Paper
+# Does Temperature Play a Part in an Increase in Homicide Statistics? An Analysis of the Toronto Homicide statistics of the Last 20 years
 
 ## Overview
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
-
-To use this folder, click the green "Code" button", then "Download ZIP". Move the downloaded folder to where you want to work on your own computer, and then modify it to suit.
+This paper analyzes data from Toronto Police homicide statistics over the past 20 years to see if warmer months see an increase in homicide statistics as compared to colder months.
 
 ## File Structure
 
