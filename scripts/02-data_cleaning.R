@@ -1,44 +1,62 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Cleans the raw plane data recorded by simplifying names and selecting the relevant columns from the data set
+# Author: Aryaman Suri
+# Date: 22 January 2024
+# Contact: aryaman.suri@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: 01-download_data.R
 
 #### Workspace setup ####
 library(tidyverse)
+library(janitor)
+library(dplyr)
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
 
-cleaned_data <-
-  raw_data |>
+# Read in the raw homicide statistics data. 
+readr::read_csv("inputs/data/raw_homicide_data.csv")
+
+#### Basic cleaning - homicide statistics ####
+# based on code from: https://tellingstorieswithdata.com/02-drinking_from_a_fire_hose.html
+raw_homicide_statistics <-
+  read_csv(
+    file = "inputs/data/raw_homicide_data.csv",
+    show_col_types = FALSE
+  )
+
+cleaned_homicide_data <-
+  raw_homicide_statistics |>
   janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+  select(homicide_type, occ_month)
 
-#### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+
+#### Save cleaned data ####
+write_csv(cleaned_homicide_data, "outputs/data/cleaned_homicide_data.csv")
+
+#### Seperate the homicides in the warm months and the cold months ####
+# We will consider October through March as cold months and April through September as warm months
+# This distinction is done based on: https://weatherspark.com/y/19863/Average-Weather-in-Toronto-Canada-Year-Round
+
+cleaned_cold_data <-
+  cleaned_homicide_data %>%
+  filter(occ_month == "October" | occ_month == "November" | occ_month == "December"
+         | occ_month == "January" | occ_month == "February" | occ_month == "March") %>%
+  group_by(homicide_type) %>%
+  summarise(
+    responses = sum(homicide_type == "Shooting" | homicide_type == "Stabbing"
+                    | homicide_type == "Other", na.rm = TRUE)
+  )
+
+cleaned_warm_data <-
+  cleaned_homicide_data %>%
+  filter(occ_month == "April" | occ_month == "May" | occ_month == "June"
+         | occ_month == "July" | occ_month == "August" | occ_month == "September") %>%
+  group_by(homicide_type) %>%
+  summarise(
+    responses = sum(homicide_type == "Shooting" | homicide_type == "Stabbing"
+                    | homicide_type == "Other", na.rm = TRUE)
+  )
+
+#### Save cleaned data ####
+write_csv(cleaned_warm_data, "outputs/data/cleaned_warm_homicide_data.csv")
+write_csv(cleaned_cold_data, "outputs/data/cleaned_cold_homicide_data.csv")
