@@ -17,7 +17,7 @@ raw_homicide_data <-
     file = 
       "https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/7d72bbbe-8adc-4b36-8ad1-5359f1c7a9cc/resource/f7076075-31c8-4dca-a3ce-967b887e511f/download/Homicides%20-%204326.csv",
     show_col_types = FALSE,
-    skip = 1
+    skip = 0
   )
 
 #### Save data ####
