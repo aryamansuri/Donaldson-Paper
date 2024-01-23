@@ -57,6 +57,17 @@ cleaned_warm_data <-
                     | homicide_type == "Other", na.rm = TRUE)
   )
 
+#### We also want the data for homicides for each month across 20 years ####
+
+cleaned_monthly_data <-
+  cleaned_homicide_data%>%
+  filter(homicide_type == "Shooting" | homicide_type == "Stabbing" | homicide_type == "Other")%>%
+   group_by(occ_month)%>%
+   summarise(
+       responses = sum(occ_month == "October" | occ_month == "November" | occ_month == "December" | occ_month == "January" | occ_month == "February" | occ_month == "March" | occ_month == "April" | occ_month == "May" | occ_month == "June" | occ_month == "July" | occ_month == "August" | occ_month == "September")
+       )
+
 #### Save cleaned data ####
 write_csv(cleaned_warm_data, "outputs/data/cleaned_warm_homicide_data.csv")
 write_csv(cleaned_cold_data, "outputs/data/cleaned_cold_homicide_data.csv")
+write_csv(cleaned_monthly_data, "outputs/data/cleaned_monthly_data.csv")
