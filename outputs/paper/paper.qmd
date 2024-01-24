@@ -1,0 +1,132 @@
+---
+title: "Does Weather Play a Part in an Increase in Homicide Statistics?"
+subtitle: "An Analysis of the Toronto's Homicide Statistics from 2004 to 2023"
+author: "Aryaman Suri"
+thanks: "Code and data are available at: https://github.com/aryamansuri/Toronto-Homicides."
+date: "today"
+date-format: long
+abstract: "This research paper examines the impact of weather on Toronto killings. The study looks for possible links between weather patterns and criminal activity by studying homicide data in various seasons and temperatures across 20 years. Using data from OpenDataToronto, this paper shows that homicides are more likely to occur in warmer weather conditions as compared to colder weather conditions."
+format: pdf
+number-sections: true
+bibliography: references.bib
+---
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+#### Workspace set-up ####
+
+## Load packages
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(here)
+library(ggplot2)
+library(ggbeeswarm)
+library(ggrepel)
+
+#read in cleaned data #
+cleaned_homicide_data <- read.csv(here::here("outputs/data/cleaned_homicide_data.csv"))
+show_col_types = FALSE
+
+#read in cleaned data #
+cleaned_warm_homicide_data <- read.csv(here::here("outputs/data/cleaned_warm_homicide_data.csv"))
+show_col_types = FALSE
+
+#read in cleaned data #
+cleaned_cold_homicide_data <- read.csv(here::here("outputs/data/cleaned_cold_homicide_data.csv"))
+show_col_types = FALSE
+
+#read in cleaned data #
+cleaned_monthly_data <- read.csv(here::here("outputs/data/cleaned_monthly_data.csv"))
+show_col_types = FALSE
+```
+
+
+## Introduction
+
+A fascinating and important question that arises in the field urban safety is how weather affects homicide rates. This question has implications for law enforcement tactics, resource allocation, policy formulation, community readiness, and criminology academic advancement.
+
+The relationship between weather and homicides is complex and influenced by a number of indirect factors. Increased hostility and irritability have been associated with higher temperatures, which may make violent conflicts more likely. Seasonal differences in the weather can also affect outdoor activities. Unfavourable weather may discourage people from going outside, which would reduce the likelihood of conflicts. Seasonal variations in daylight availability have an impact on the visibility of crime and longer daylight hours may serve as a deterrent when criminal activity becomes more obvious. Social interactions are further affected by the possibility of confrontations that could turn violent due to the tendency of specific weather patterns to promote outdoor gatherings. Extended periods of unfavourable weather, including intense rain or extremely high temperatures, can also have a detrimental impact on mental health and criminal behaviour. Even though these correlations have been noted, it's important to recognize how complex the link is because a number of social, economic, and environmental elements work together to influence crime rates. Determining direct causality is still difficult and necessitates a sophisticated comprehension of the complex dynamics involved.
+
+To examine the impact of weather on homicides, this paper is organized into the following sections: Data, Results, Discussion, and Conclusion.  In the Data section, I discuss the nature of the spreadsheet obtained through the City of Toronto’s OpenDataToronto Library [@rOpenDataToronto] and the steps I took to clean and analyze the data. The Results section highlights trends found during the analysis process, while the Discussion section further evaluates the trends and presents insight. Lastly, the Conclusion section summarizes the main findings from this paper. 
+
+
+## Data
+
+The data utilized throughout this paper was obtained through the City of Toronto’s OpenDataToronto Library [@rOpenDataToronto]. The data set used is entitled ' Police Annual Statistical Report - Homicides' [@HomicideStatistics]. Data was collected and analyzed using the statistical programming software R [@r], with additional support from `tidyverse` [@rTidyverse], `ggplot2` [@rGgplot2], `dplyr` [@rDplyr], `readr` [@rReadr], `tibble` [@rTibble], `janitor` [@rJanitor], `KableExtra` [@rKableExtra], `knitr` [@rknitr], `ggbeeswarm` [@rggbeeswarm], `ggrepel` [@rggrepel], and `here` [@rHere]. A further discussion of the data collection, cleaning, and analysis process can be found later on in this paper. 
+
+### Toronto Homicide Statistics
+This dataset, published by Toronto Police [@HomicideStatistics] outlines Homicide statistics in the city of Toronto. For each homicide, the data is divided into three types, which are: Shooting, Stabbing and Other. The data also shows the date on which these homicides were committed. For this study, I will be focusing on the broad month of the incident so we can use weather data[@TorontoWeather] to classify the homicide as a warm weather homicide or a cold weather homicide. 
+
+Upon analysis, I only used columns that indicated homicide type and month of occurrence. All other columns were deemed beyond the scope of this paper. I conducted the first step of basic data cleaning to eliminate additional columns and simplify the names of retained columns and grouped the homicides by months. (see @tbl-cleaned_monthly_data).
+
+```{r}
+#| message: false
+#| echo: false
+#| label: tbl-cleaned_monthly_data
+#| tbl-cap: Sample of Cleaned Homicide Statistics Data
+
+head (cleaned_monthly_data, 5) |>
+  kable(
+    col.names = c("Month", "Homicide Data"),
+  booktabs = TRUE
+  )
+```
+### Division of Homicides
+
+The Toronto Homicide Statistics data set [@HomicideStatistics] divides the Homicides into 3 subcategories, which are: Shootings, Stabbings and Other. Consequently, I wrote a script using 'group_by' to see the total count of homicides for each subcategory (see @tbl-HomicideData). 
+We now want to categorize the months as "warm" or "cold" to categorize a homicides that occurred 
+in a warm month or a cold month. According to Toronto temperature history [@TorontoWeather],
+Toronto has experienced cooler weather in the months of October through March and warm weather in the months April through September
+
+
+Homicide Subcategory| Count
+-----|-----:
+Shooting|727
+Stabbing|317
+Other|352
+
+:The breakdown of Homicides by the subcategory {#tbl-HomicideData}
+
+### Categorize Homicide by Temperature
+
+Since I now had a basis and metric to classify how the warm weather homicides and cold weather homicides will be categorized, I cleaned the existing data and created a data table using "group_by" with homicides for the warm months(see @tbl-cleaned_warm_data) and repeated the process for the cold months(see @tbl-cleaned_cold_data).
+
+```{r}
+#| message: false
+#| echo: false
+#| label: tbl-cleaned_warm_data
+#| tbl-cap: Homicide Data for Warm Months[April - September]
+
+head (cleaned_warm_homicide_data) |>
+  kable(
+    col.names = c("Homicide", "Count"),
+  booktabs = TRUE
+  )
+```
+```{r}
+#| message: false
+#| echo: false
+#| label: tbl-cleaned_cold_data
+#| tbl-cap: Homicide Data for Cold Months[October - March]
+
+head (cleaned_cold_homicide_data) |>
+  kable(
+    col.names = c("Homicide", "Count"),
+  booktabs = TRUE
+  )
+```
+## Results
+
+## Discussion
+
+
+
+## Conclusion
+
+
+## References
+
