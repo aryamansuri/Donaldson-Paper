@@ -67,7 +67,18 @@ cleaned_monthly_data <-
        responses = sum(occ_month == "October" | occ_month == "November" | occ_month == "December" | occ_month == "January" | occ_month == "February" | occ_month == "March" | occ_month == "April" | occ_month == "May" | occ_month == "June" | occ_month == "July" | occ_month == "August" | occ_month == "September")
        )
 
+#### We also want the data for homicides categorized into the types of homicides ####
+
+cleaned_categorized_data <-
+  cleaned_homicide_data %>%
+  filter(occ_month == "October" | occ_month == "November" | occ_month == "December" | occ_month == "January" | occ_month == "February" | occ_month == "March" | occ_month == "April" | occ_month == "May" | occ_month == "June" | occ_month == "July" | occ_month == "August" | occ_month == "September") %>%
+    group_by(homicide_type)%>%
+    summarise(
+      responses = sum(homicide_type == "Shooting" | homicide_type == "Stabbing" | homicide_type == "Other")
+    )
+
 #### Save cleaned data ####
 write_csv(cleaned_warm_data, "outputs/data/cleaned_warm_homicide_data.csv")
 write_csv(cleaned_cold_data, "outputs/data/cleaned_cold_homicide_data.csv")
 write_csv(cleaned_monthly_data, "outputs/data/cleaned_monthly_data.csv")
+write_csv(cleaned_categorized_data, "outputs/data/cleaned_categorized_data.csv")
