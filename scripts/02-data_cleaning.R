@@ -62,23 +62,33 @@ cleaned_warm_data <-
 cleaned_monthly_data <-
   cleaned_homicide_data%>%
   filter(homicide_type == "Shooting" | homicide_type == "Stabbing" | homicide_type == "Other")%>%
-   group_by(occ_month)%>%
-   summarise(
-       responses = sum(occ_month == "October" | occ_month == "November" | occ_month == "December" | occ_month == "January" | occ_month == "February" | occ_month == "March" | occ_month == "April" | occ_month == "May" | occ_month == "June" | occ_month == "July" | occ_month == "August" | occ_month == "September")
-       )
+  group_by(occ_month)%>%
+  summarise(
+    responses = sum(occ_month == "October" | occ_month == "November" | occ_month == "December" | occ_month == "January" | occ_month == "February" | occ_month == "March" | occ_month == "April" | occ_month == "May" | occ_month == "June" | occ_month == "July" | occ_month == "August" | occ_month == "September")
+  )
 
 #### We also want the data for homicides categorized into the types of homicides ####
 
 cleaned_categorized_data <-
   cleaned_homicide_data %>%
   filter(occ_month == "October" | occ_month == "November" | occ_month == "December" | occ_month == "January" | occ_month == "February" | occ_month == "March" | occ_month == "April" | occ_month == "May" | occ_month == "June" | occ_month == "July" | occ_month == "August" | occ_month == "September") %>%
-    group_by(homicide_type)%>%
-    summarise(
-      responses = sum(homicide_type == "Shooting" | homicide_type == "Stabbing" | homicide_type == "Other")
-    )
+  group_by(homicide_type)%>%
+  summarise(
+    responses = sum(homicide_type == "Shooting" | homicide_type == "Stabbing" | homicide_type == "Other")
+  )
+
+#### We want the data for warm weather homicides and cold weather homicides merged into one table####
+
+cleaned_comparing_data <-
+  inner_join(x = cleaned_cold_homicide_data, y = cleaned_warm_homicide_data, by = "homicide_type")
+
+colnames(cleaned_comparing_data) <-
+  c("Homicide Type", "Cold Months", "Warm Months")
 
 #### Save cleaned data ####
 write_csv(cleaned_warm_data, "outputs/data/cleaned_warm_homicide_data.csv")
 write_csv(cleaned_cold_data, "outputs/data/cleaned_cold_homicide_data.csv")
 write_csv(cleaned_monthly_data, "outputs/data/cleaned_monthly_data.csv")
 write_csv(cleaned_categorized_data, "outputs/data/cleaned_categorized_data.csv")
+write_csv(cleaned_comparing_data, "outputs/data/cleaned_comparing_data.csv")
+
