@@ -86,6 +86,7 @@ colnames(cleaned_comparing_data) <-
   c("Homicide Type", "Cold Months", "Warm Months")
 
 #### Save cleaned data ####
+write_csv(cleaned_homicide_data, "outputs/data/cleaned_homicide_data.csv")
 write_csv(cleaned_warm_data, "outputs/data/cleaned_warm_homicide_data.csv")
 write_csv(cleaned_cold_data, "outputs/data/cleaned_cold_homicide_data.csv")
 write_csv(cleaned_monthly_data, "outputs/data/cleaned_monthly_data.csv")
