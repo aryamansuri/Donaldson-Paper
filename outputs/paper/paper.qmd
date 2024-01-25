@@ -8,6 +8,8 @@ date-format: long
 abstract: "This research paper examines the impact of weather on Toronto killings. The study looks for possible links between weather patterns and criminal activity by studying homicide data in various seasons and temperatures across 20 years. Using data from OpenDataToronto, this paper shows that homicides are more likely to occur in warmer weather conditions as compared to colder weather conditions."
 format: pdf
 number-sections: true
+toc: true
+toc-depth: 2
 bibliography: references.bib
 ---
 
@@ -42,12 +44,20 @@ show_col_types = FALSE
 #read in cleaned data #
 cleaned_monthly_data <- read.csv(here::here("outputs/data/cleaned_monthly_data.csv"))
 show_col_types = FALSE
+
+#read in cleaned data #
+cleaned_categorized_data <- read.csv(here::here("outputs/data/cleaned_categorized_data.csv"))
+show_col_types = FALSE
+
+#read in cleaned data #
+cleaned_comparing_data <- read.csv(here::here("outputs/data/cleaned_comparing_data.csv"))
+show_col_types = FALSE
 ```
 
 
 ## Introduction
 
-A fascinating and important question that arises in the field urban safety is how weather affects homicide rates. This question has implications for law enforcement tactics, resource allocation, policy formulation, community readiness, and criminology academic advancement.
+A fascinating and important question that arises in the field of urban safety is how weather affects homicide rates. This question has implications for law enforcement tactics, resource allocation, policy formulation, community readiness, and criminology academic advancement.
 
 The relationship between weather and homicides is complex and influenced by a number of indirect factors. Increased hostility and irritability have been associated with higher temperatures, which may make violent conflicts more likely. Seasonal differences in the weather can also affect outdoor activities. Unfavourable weather may discourage people from going outside, which would reduce the likelihood of conflicts. Seasonal variations in daylight availability have an impact on the visibility of crime and longer daylight hours may serve as a deterrent when criminal activity becomes more obvious. Social interactions are further affected by the possibility of confrontations that could turn violent due to the tendency of specific weather patterns to promote outdoor gatherings. Extended periods of unfavourable weather, including intense rain or extremely high temperatures, can also have a detrimental impact on mental health and criminal behaviour. Even though these correlations have been noted, it's important to recognize how complex the link is because a number of social, economic, and environmental elements work together to influence crime rates. Determining direct causality is still difficult and necessitates a sophisticated comprehension of the complex dynamics involved.
 
@@ -82,14 +92,18 @@ We now want to categorize the months as "warm" or "cold" to categorize a homicid
 in a warm month or a cold month. According to Toronto temperature history [@TorontoWeather],
 Toronto has experienced cooler weather in the months of October through March and warm weather in the months April through September
 
+```{r}
+#| message: false
+#| echo: false
+#| label: tbl-HomicideData
+#| tbl-cap: Sample of Cleaned Categorized Homicide Data
 
-Homicide Subcategory| Count
------|-----:
-Shooting|727
-Stabbing|317
-Other|352
-
-:The breakdown of Homicides by the subcategory {#tbl-HomicideData}
+head (cleaned_categorized_data, 5) |>
+    kable(
+        col.names = c("Homicide Category", "Count"),
+        booktabs = TRUE
+    )
+```
 
 ### Categorize Homicide by Temperature
 
@@ -119,14 +133,94 @@ head (cleaned_cold_homicide_data) |>
   booktabs = TRUE
   )
 ```
+
 ## Results
 
-## Discussion
+### Monthly Homicide Data 
 
+As evident from the insights obtained in @tbl-cleaned_monthly_data2, notable patterns emerge. Referencing @TorontoWeather, we can discern that July stands out as one of the hottest months in Toronto over the last two decades, while conversely, January registers as one of the coldest. Corroborating this meteorological data with homicide statistics reveals a corresponding trend, with July exhibiting a higher incidence of homicides, while January records a comparatively lower frequency. For a visual representation of these observations, please consult @fig-monthly_statistics, which encapsulates the physical manifestation of the data trends.
 
+```{r}
+#| message: false
+#| echo: false
+#| label: tbl-cleaned_monthly_data2
+#| tbl-cap: Homicide Data for Every Month across 20 years
+
+head (cleaned_monthly_data, 12) |>
+  kable(
+    col.names = c("Month", "Homicides"),
+  booktabs = TRUE
+  )
+```
+
+```{r}
+#| message: false
+#| echo: false
+#| label: fig-monthly_statistics
+#| fig-cap: Number of Homicide Incidents per month from 2004 to 2023.
+
+ggplot(cleaned_monthly_data, aes(x = occ_month, y= responses)) + 
+  geom_bar(stat="identity", fill='blue') +
+  xlab("Months") +
+  ylab("Homicide Incidents")  +
+  theme(axis.text.x = element_text(angle = 90))
+
+```
+
+### Affect of weather on Homicide Incidents
+
+A detailed analysis of seasonal data is necessary to determine whether there is a relationship between weather and homicide incidents. A strong pattern emerges by comparing the analysis of @tbl-cold_data, which represents the colder months of October to March, with @tbl-warm_data, which includes homicide incidences from April to September between 2004 and 2023. There is a distinct decrease in homicide events of all kinds (Shootings, Stabbings, Other) throughout the winter months, but a substantial increase during the hotter months. This glaring discrepancy suggests a direct link between rising homicide rates and warmer temperatures.
+
+```{r}
+#| message: false
+#| echo: false
+#| label: tbl-warm_data
+#| tbl-cap: Homicide Incidents from April through September from 2004-2023
+
+head (cleaned_warm_homicide_data) |>
+  kable(
+    col.names = c("Homicide Subcategory", "Incidents"),
+  booktabs = TRUE
+  )
+```
+
+```{r}
+#| message: false
+#| echo: false
+#| label: tbl-cold_data
+#| tbl-cap: Homicide Incidents from October through March from 2004-2023
+
+head (cleaned_cold_homicide_data) |>
+  kable(
+    col.names = c("Homicide Subcategory", "Incidents"),
+  booktabs = TRUE
+  )
+```
+
+We now look at the homicide data from both types of weather side by side in @tbl-both_months and can see that warm weather has an increase in all types of homicides. We can also see this graphically depicted in Figure 2
+
+```{r}
+#| message: false
+#| echo: false
+#| label: tbl-both_months
+#| tbl-cap: Comparing Homicide Data for Warm Weather and Cold Weather
+
+head (cleaned_comparing_data) |>
+  kable(
+    col.names = c("Homicide Type", "Cold Weather", "Warm Weather"),
+  booktabs = TRUE
+  )
+```
+
+<!-- Delete the below line for reproducability -->
+![Graph depicting the impact of weather on all types of homicides]("/Users/aryamansuri/Desktop/Toronto-Homicides/inputs/sketches/Comparing.png"){width=500}
+
+{{< pagebreak >}}
 
 ## Conclusion
+Our thorough examination of Toronto homicide statistics has revealed significant insights into the patterns of criminal behaviour in the city. One important finding is that warmer temperature correlates with a higher rate of homicides than cooler weather. While determining direct causation is difficult, this pattern is consistent with previous research indicating that higher temperatures may contribute to increased aggression and social tensions[@WeatherAndCrime]. Furthermore, warmer weather frequently leads to more social contacts and outdoor activities, which can create situations that foster conflict and escalate into violent occurrences. These findings highlight the complex relationship between weather patterns and crime, stressing the significance of taking environmental elements into account when analyzing and managing urban safety issues.
 
+{{< pagebreak >}}
 
 ## References
 
