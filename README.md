@@ -30,4 +30,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-Parts of the conclusion of the paper were written help of the Chat-GPT-3.5. The entire chat history is available in inputs/llm/Toronto Homicides_ Weather Impact.txt.
+Parts of the conclusion of the paper were written with the help of the Chat-GPT-3.5. The entire chat history is available in inputs/llm/Toronto Homicides_ Weather Impact.txt.
